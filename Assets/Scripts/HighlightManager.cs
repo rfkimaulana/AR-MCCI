@@ -12,6 +12,7 @@ public class HighlightManager : MonoBehaviour
     {
         try
         {
+            objectRenderer = GetComponent<Renderer>(); 
             if (objectRenderer == null)
             {
                 throw new System.Exception("Renderer component not found on " + gameObject.name);
