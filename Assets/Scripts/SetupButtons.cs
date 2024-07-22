@@ -33,9 +33,17 @@ public class SetupButtons : MonoBehaviour
             buttons[i].onClick.AddListener(() => 
             {
                 Debug.Log("Button clicked: " + buttonIndex);
-                buttonAnimasi.PlayAnimation(buttonIndex);
+                int subIndex = DetermineSubIndex(buttonIndex); // Menentukan subIndex berdasarkan logika tertentu
+                buttonAnimasi.PlayAnimation(buttonIndex, subIndex);
                 audioManager.PlayAudio(buttonIndex);
             });
         }
+    }
+
+    private int DetermineSubIndex(int buttonIndex)
+    {
+        // Logika untuk menentukan subIndex berdasarkan buttonIndex
+        // Misalnya, kita bisa menggunakan buttonIndex sebagai subIndex atau logika lainnya
+        return buttonIndex % 2; // Contoh: menggunakan modulo untuk menentukan subIndex
     }
 }

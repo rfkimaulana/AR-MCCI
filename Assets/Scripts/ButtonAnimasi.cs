@@ -2,11 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class HighlightObjectGroup
+{
+    public GameObject[] gameObjects;
+}
+
 public class ButtonAnimasi : MonoBehaviour
 {
     public AnimationClip[] animationClips; // Array untuk menyimpan daftar file animasi
-    public GameObject[] highlightObjects; // Array untuk menyimpan referensi ke objek yang akan di-highlight
+    public HighlightObjectGroup[] highlightObjects; // Array untuk menyimpan grup objek yang akan di-highlight
     private Animator animator; // Komponen Animator
+    private Coroutine highlightCoroutine; // Menyimpan referensi coroutine yang sedang berjalan
 
     void Start()
     {
@@ -17,7 +24,7 @@ public class ButtonAnimasi : MonoBehaviour
         }
     }
 
-    public void PlayAnimation(int index)
+    public void PlayAnimation(int index, int subIndex)
     {
         if (index < 0 || index >= animationClips.Length) 
         {
@@ -34,17 +41,41 @@ public class ButtonAnimasi : MonoBehaviour
 
         if (index < highlightObjects.Length && highlightObjects[index] != null)
         {
-            HighlightManager highlightManager = highlightObjects[index].GetComponent<HighlightManager>();
-            if (highlightManager != null)
+            Debug.Log("HighlightObjectGroup found at index: " + index);
+            foreach (var gameObject in highlightObjects[index].gameObjects)
             {
-                Debug.Log("Starting highlight for " + highlightObjects[index].name);
-                highlightManager.HighlightObject(); // Mulai highlight
-                StartCoroutine(ResetHighlightAfterAnimation(highlightManager, animationClips[index].length));
+                if (gameObject != null)
+                {
+                    HighlightManager highlightManager = gameObject.GetComponent<HighlightManager>();
+                    if (highlightManager != null)
+                    {
+                        Debug.Log("Starting highlight for " + gameObject.name);
+                        highlightManager.HighlightObject(); // Mulai highlight
+                        highlightCoroutine = StartCoroutine(ResetHighlightAfterAnimation(highlightManager, animationClips[index].length));
+                    }
+                    else
+                    {
+                        Debug.LogError("HighlightManager component not found on " + gameObject.name);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("GameObject is null in HighlightObjectGroup at index: " + index);
+                }
             }
-            else
-            {
-                Debug.LogError("HighlightManager component not found on " + highlightObjects[index].name);
-            }
+        }
+        else
+        {
+            Debug.LogWarning("HighlightObjectGroup is null at index: " + index);
+        }
+    }
+
+    public void StopHighlight()
+    {
+        if (highlightCoroutine != null)
+        {
+            StopCoroutine(highlightCoroutine);
+            highlightCoroutine = null;
         }
     }
 
@@ -55,5 +86,48 @@ public class ButtonAnimasi : MonoBehaviour
         {
             highlightManager.ResetHighlight(); // Hentikan highlight setelah animasi selesai
         }
+    }
+
+    // Tambahkan metode untuk mereset semua highlight
+    public void ResetAllHighlights()
+    {
+        StopHighlight();
+        foreach (var group in highlightObjects)
+        {
+            if (group != null)
+            {
+                foreach (var gameObject in group.gameObjects)
+                {
+                    if (gameObject != null)
+                    {
+                        HighlightManager highlightManager = gameObject.GetComponent<HighlightManager>();
+                        if (highlightManager != null)
+                        {
+                            highlightManager.ResetHighlight(); // Reset highlight
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Tambahkan metode untuk mereset semua animasi
+    public void ResetAllAnimations()
+    {
+        foreach (var clip in animationClips)
+        {
+            if (clip != null)
+            {
+                animator.Play(clip.name, -1, 0f); // Memainkan animasi dari awal
+                animator.StopPlayback(); // Menghentikan animasi
+            }
+        }
+    }
+
+    // Tambahkan metode untuk menangani klik tombol forward
+    public void OnForwardButtonClick()
+    {
+        ResetAllHighlights();
+        // Tambahkan logika untuk menangani klik tombol forward
     }
 }

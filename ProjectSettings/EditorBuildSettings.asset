@@ -6,21 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/01.Awal.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
-    path: Assets/Scenes/02.DataUser.unity
-    guid: 70ea71c2bd933684c915923e5e1974f5
-  - enabled: 1
-    path: Assets/Scenes/03.BridgePretest.unity
-    guid: 74c51f2d1f5a3f14297cb21e5144eeca
-  - enabled: 1
-    path: Assets/Scenes/04.PreTest.unity
-    guid: 4186c1abe5eaf694a94f1eb845aa2181
-  - enabled: 1
-    path: Assets/Scenes/05.HasilScorePreTest.unity
-    guid: c4f4ead532d6aea4e817579361dccc19
-  - enabled: 1
     path: Assets/Scenes/06.PengnatarMateriAjar.unity
     guid: 23f90ab6846685a4ab71d61d3791c923
   - enabled: 1
@@ -35,7 +20,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/10.AR_MateriAjarPraktek.unity
     guid: 6511a43dcd334064f95774d6e71968e0
-  - enabled: 1
-    path: Assets/Scenes/10.AR_TurnOn.unity
-    guid: 5e93cf2a2be389045841037ab930c695
   m_configObjects: {}

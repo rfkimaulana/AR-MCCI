@@ -7,6 +7,7 @@ public class DropdownValue : MonoBehaviour
 {
     public TMP_Dropdown dropdown;
     public List<GameObjectList> gameObjectsPerIndex; // List of GameObjectList to activate per index
+    public List<AudioManager> audioManagers; // Added list of AudioManagers
 
     [System.Serializable]
     public class GameObjectList
@@ -28,6 +29,12 @@ public class DropdownValue : MonoBehaviour
             return;
         }
 
+        if (audioManagers == null || audioManagers.Count == 0)
+        {
+            Debug.LogError("audioManagers list is not assigned or empty in the Inspector");
+            return;
+        }
+
         // Deactivate all GameObjects at the start
         DeactivateAllGameObjects();
 
@@ -37,13 +44,22 @@ public class DropdownValue : MonoBehaviour
 
     void DropdownItemSelected(int index)
     {
+        // Reset all audio when dropdown value changes
+        foreach (var audioManager in audioManagers)
+        {
+            if (audioManager != null)
+            {
+                audioManager.ResetAllAudio();
+            }
+        }
+
         // Deactivate all GameObjects first
         DeactivateAllGameObjects();
 
-        // Activate the selected GameObjects if index is greater than 0
-        if (index > 0 && index <= gameObjectsPerIndex.Count)
+        // Activate the selected GameObjects if index is valid
+        if (index >= 0 && index < gameObjectsPerIndex.Count)
         {
-            foreach (GameObject obj in gameObjectsPerIndex[index - 1].gameObjects)
+            foreach (GameObject obj in gameObjectsPerIndex[index].gameObjects)
             {
                 if (obj != null)
                 {
@@ -75,6 +91,19 @@ public class DropdownValue : MonoBehaviour
     {
         Debug.Log("Dropdown option " + index + " clicked");
         // Add any additional logic you want to execute when a dropdown option is clicked
+
+        // Ensure all GameObjects are activated for the selected dropdown option
+        if (index >= 0 && index < gameObjectsPerIndex.Count)
+        {
+            foreach (GameObject obj in gameObjectsPerIndex[index].gameObjects)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(true);
+                    Debug.Log("Activated GameObject: " + obj.name);
+                }
+            }
+        }
     }
 
     // Update is called once per frame

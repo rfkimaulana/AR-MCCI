@@ -32,4 +32,12 @@ public class AudioManager : MonoBehaviour
         audioSource.clip = audioClips[index];
         audioSource.Play(); // Memainkan audio berdasarkan indeks
     }
+
+    // Metode untuk mereset semua audio
+    public void ResetAllAudio()
+    {
+        audioSource.Stop(); // Menghentikan audio yang sedang diputar
+        audioSource.clip = null; // Menghapus referensi ke audio clip
+        Debug.Log("All audio has been reset.");
+    }
 }

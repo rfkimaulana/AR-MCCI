@@ -18,6 +18,7 @@ public class HighlightManager : MonoBehaviour
         else
         {
             originalMaterial = objectRenderer.material; // Simpan material asli
+            Debug.Log("Original material set for " + gameObject.name);
         }
     }
 
@@ -27,6 +28,18 @@ public class HighlightManager : MonoBehaviour
         if (objectRenderer != null && highlightMaterial != null)
         {
             objectRenderer.material = highlightMaterial; // Ganti material dengan highlight
+            Debug.Log("Highlight material applied to " + gameObject.name);
+        }
+        else
+        {
+            if (objectRenderer == null)
+            {
+                Debug.LogError("Renderer component is null on " + gameObject.name);
+            }
+            if (highlightMaterial == null)
+            {
+                Debug.LogError("Highlight material is not set on " + gameObject.name);
+            }
         }
     }
 
@@ -36,6 +49,18 @@ public class HighlightManager : MonoBehaviour
         if (objectRenderer != null && originalMaterial != null)
         {
             objectRenderer.material = originalMaterial; // Kembalikan material asli
+            Debug.Log("Original material restored to " + gameObject.name);
+        }
+        else
+        {
+            if (objectRenderer == null)
+            {
+                Debug.LogError("Renderer component is null on " + gameObject.name);
+            }
+            if (originalMaterial == null)
+            {
+                Debug.LogError("Original material is not set on " + gameObject.name);
+            }
         }
     }
 }
