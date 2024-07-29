@@ -1,105 +1,103 @@
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
-
 
 [System.Serializable]
 public class HighlightObjectGroup
 {
     public GameObject[] gameObjects;
-
 }
 
 public class ButtonAnimasi : MonoBehaviour
 {
-
-    public AnimationClip[] animationClips; 
-
-    public HighlightObjectGroup[] highlightObjects; 
-
-    private Animator animator; 
-
-    private Coroutine highlightCoroutine; 
-
+    public AnimationClip[] animationClips; // Array untuk menyimpan daftar file animasi
+    public HighlightObjectGroup[] highlightObjects; // Array untuk menyimpan grup objek yang akan di-highlight
+    private Animator animator; // Komponen Animator
+    private Coroutine highlightCoroutine; // Menyimpan referensi coroutine yang sedang berjalan
 
     void Start()
-
     {
-
-        animator = GetComponent<Animator>(); 
-
+        animator = GetComponent<Animator>(); // Mendapatkan komponen Animator
         if (animator == null)
-
         {
-
             Debug.LogError("Animator component not found on " + gameObject.name);
-
         }
-
     }
-
 
     public void PlayAnimation(int index, int subIndex)
-
     {
+        if (index < 0 || index >= animationClips.Length) 
+        {
+            Debug.LogWarning("Animation index out of range: " + index);
+            return; 
+        }
+        if (animationClips[index] == null)
+        {
+            Debug.LogError("Animation clip at index " + index + " is null");
+            return;
+        }
+        Debug.Log("Playing animation: " + animationClips[index].name);
+        animator.Play(animationClips[index].name, -1, 0f); 
 
-        Debug.LogWarning("PlayAnimation method is disabled.");
-
-        return;
-
+        if (index < highlightObjects.Length && highlightObjects[index] != null)
+        {
+            Debug.Log("HighlightObjectGroup found at index: " + index);
+            foreach (var gameObject in highlightObjects[index].gameObjects)
+            {
+                if (gameObject != null)
+                {
+                    HighlightManager highlightManager = gameObject.GetComponent<HighlightManager>();
+                    if (highlightManager != null)
+                    {
+                        Debug.Log("Starting highlight for " + gameObject.name);
+                        highlightManager.HighlightObject(); 
+                    }
+                    else
+                    {
+                        Debug.LogError("HighlightManager component not found on " + gameObject.name);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("GameObject is null in HighlightObjectGroup at index: " + index);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("HighlightObjectGroup is null at index: " + index);
+        }
     }
-
 
     public void StopHighlight()
-
     {
-
-        Debug.LogWarning("StopHighlight method is disabled.");
-
-        return;
+        if (highlightCoroutine != null)
+        {
+            StopCoroutine(highlightCoroutine);
+            highlightCoroutine = null;
+        }
     }
-
 
     private IEnumerator ResetHighlightAfterAnimation(HighlightManager highlightManager, float duration)
-
     {
-
-        Debug.LogWarning("ResetHighlightAfterAnimation method is disabled.");
-        yield break;
-
+        yield return new WaitForSeconds(duration);
+        if (highlightManager != null)
+        {
+            highlightManager.ResetHighlight(); 
+        }
     }
 
-
-    public void ResetAllHighlights()
-
-    {
-
-        Debug.LogWarning("ResetAllHighlights method is disabled.");
-
-        return;
-
-    }
-
-
+    // Tambahkan metode untuk mereset semua animasi
     public void ResetAllAnimations()
-
     {
-
-        Debug.LogWarning("ResetAllAnimations method is disabled.");
-
-        return;
-
-    }
-
-
-    public void OnForwardButtonClick()
-
-    {
-        Debug.LogWarning("OnForwardButtonClick method is disabled.");
-
-        return;
-
+        foreach (var clip in animationClips)
+        {
+            if (clip != null)
+            {
+                animator.Play(clip.name, -1, 0f); // Memainkan animasi dari awal
+                animator.StopPlayback(); // Menghentikan animasi
+            }
+        }
     }
 
 }

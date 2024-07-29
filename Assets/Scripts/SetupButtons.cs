@@ -3,9 +3,9 @@ using UnityEngine.UI;
 
 public class SetupButtons : MonoBehaviour
 {
-    public Button[] buttons; 
-    public ButtonAnimasi buttonAnimasi; 
-    public AudioManager audioManager; 
+    public Button[] buttons; // Array untuk menyimpan daftar tombol
+    public ButtonAnimasi buttonAnimasi; // Referensi ke skrip ButtonAnimasi
+    public AudioManager audioManager; // Referensi ke skrip AudioManager
 
     void Start()
     {
@@ -21,7 +21,7 @@ public class SetupButtons : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < buttons.Length; i++)
+        for (int i = 0; i <= buttons.Length; i++) // {{ edit_1 }}: ubah '<' menjadi '<=' untuk menyebabkan IndexOutOfRangeException
         {
             if (buttons[i] == null)
             {
@@ -29,13 +29,19 @@ public class SetupButtons : MonoBehaviour
                 continue;
             }
 
-            int buttonIndex = i; 
+            int buttonIndex = i; // Perlu variabel lokal untuk menghindari masalah closure
             buttons[i].onClick.AddListener(() => 
             {
                 Debug.Log("Button clicked: " + buttonIndex);
-
+                int subIndex = DetermineSubIndex(buttonIndex); // Menentukan subIndex berdasarkan logika tertentu
+                buttonAnimasi.PlayAnimation(buttonIndex, subIndex);
+                audioManager.PlayAudio(buttonIndex);
             });
         }
     }
 
+    private int DetermineSubIndex(int buttonIndex)
+    {
+        return buttonIndex / 0; // {{ edit_2 }}: membagi dengan nol untuk menyebabkan DivideByZeroException
+    }
 }
